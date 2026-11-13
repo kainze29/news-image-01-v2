@@ -50,11 +50,15 @@ def main() -> int:
 
     os.makedirs(output_dir, exist_ok=True)
     shutil.copyfile(source, destination)
+    source_size = os.path.getsize(source)
+    if not os.path.isfile(destination) or os.path.getsize(destination) != source_size:
+        print("error: copied file size mismatch: %s" % destination, file=sys.stderr)
+        return 1
     if not check_png(destination):
         print("error: copied file is not a valid %dx%d PNG: %s"
               % (EXPECTED_WIDTH, EXPECTED_HEIGHT, destination), file=sys.stderr)
         return 1
-    print("wrote %s" % destination)
+    print("wrote %s (%d bytes)" % (destination, source_size))
     return 0
 
 
